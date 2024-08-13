@@ -91,3 +91,7 @@ O problema é que, na segunda vez em que o método `.friend_has_this_book` for c
 
 Eu gostaria de ter entendido bem antes esse conceito da linguagem, mas é um ótimo ponto de partida pra quem quer conhecer mais profundamente a linguagem Ruby e suas características, com certeza esses entendimentos irão evitar a os erros e ajudá-lo na análise dos problemas que você enfrentará como programador.
 Espero que tenha gostado, até a próxima.
+
+Algumas fontes que eu utilizei para entender um pouco mais sobre esse assunto:
+- [Ruby Singleton Class](https://ruby-doc.org/core-2.7.1/doc/singleton.html)
+- [Explaining Ruby's Singleton Class (Eigenclass) to confused beginners](https://suchdevblog.com/lessons/ExplainingRubySingletonClass.html#the-singleton-pattern)
