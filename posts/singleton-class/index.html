@@ -242,6 +242,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="dt">Book</span><span class="at">.gift_a_friend</span>(friend2, book)  <span class="co"># =&gt; Comportamento errado</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>O problema é que, na segunda vez em que o método <code>.friend_has_this_book</code> for chamado, ele não vai executar <code>@friend.books.include? @book</code> pois o valor <code>@friend_has_this_book</code> já foi preenchido na primeira vez em que o código foi executado.</p>
 <p>Eu gostaria de ter entendido bem antes esse conceito da linguagem, mas é um ótimo ponto de partida pra quem quer conhecer mais profundamente a linguagem Ruby e suas características, com certeza esses entendimentos irão evitar a os erros e ajudá-lo na análise dos problemas que você enfrentará como programador. Espero que tenha gostado, até a próxima.</p>
+<p>Algumas fontes que eu utilizei para entender um pouco mais sobre esse assunto: - <a href="https://ruby-doc.org/core-2.7.1/doc/singleton.html">Ruby Singleton Class</a> - <a href="https://suchdevblog.com/lessons/ExplainingRubySingletonClass.html#the-singleton-pattern">Explaining Ruby’s Singleton Class (Eigenclass) to confused beginners</a></p>
 
 
 
