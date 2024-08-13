@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Harlow Malloc">
+<meta name="author" content="João Moura">
 <meta name="dcterms.date" content="2024-08-12">
 
-<title>Post With Code – developerblog</title>
+<title>O mistério do objeto de Ruby escondido Singleton Class – developerblog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -110,11 +144,10 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Post With Code</h1>
+      <h1 class="title">O mistério do objeto de Ruby escondido Singleton Class</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">news</div>
                 <div class="quarto-category">code</div>
-                <div class="quarto-category">analysis</div>
+                <div class="quarto-category">ruby</div>
               </div>
                   </div>
   </div>
@@ -125,7 +158,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Author</div>
       <div class="quarto-title-meta-contents">
-               <p>Harlow Malloc </p>
+               <p>João Moura </p>
             </div>
     </div>
       
@@ -151,7 +184,64 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p>This is a post with executable code.</p>
+<p>Oi, espero que esteja pronto, porque agora iremos tentar entender o que é esse objeto “escondido” por todos os lugares quando programamos em Ruby.</p>
+<p>Se você é um programador curioso, já sabe que Ruby é uma linguagem que utiliza o paradigma de Orientação à Objetos, mais que isso, em Ruby tudo é objeto, tudo mesmo. Quando definimos uma classe <code>House</code>, por exemplo, essa classe também é um objeto, uma instância de <code>Class</code>, podemos perceber isso com o trecho de código abaixo, onde chamamos o método <code>.class</code> que retorna a classe de um objeto.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode ruby code-with-copy"><code class="sourceCode ruby"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">class</span> <span class="dt">House</span>; <span class="cf">end</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># House é uma instância da classe `Class`</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="dt">House</span><span class="at">.class</span>  <span class="co"># =&gt; Class</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Isso pode ser diferente das coisas que você já viu antes e funciona de forma diferente de como eu acreditava, mas como essa característica da linguagem me impactava como programador? Eu não sabia, então procurei entender mais sobre esse comportamento, até que encontrei a chamada Singleton Class, também encontrei referências que chamam de Eigenclass ou Classe anônima. Independente de como chamamos, essa classe “escondida” é responsável por termos em Ruby os chamados métodos de classe, como o desse trecho abaixo.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode ruby code-with-copy"><code class="sourceCode ruby"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">class</span> <span class="dt">House</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dv">self</span><span class="at">.open</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">puts</span> <span class="st">"...Opened"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="dt">House</span><span class="at">.open</span>  <span class="co"># =&gt; ...Opened</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Acredito que não há nada diferente nesse código do que estamos acostumados escrever como programador Ruby, mas o que novidade para mim é saber que a sintáxe <code>def self.open</code> é a responsável por acessar a Singleton Class da classe <code>House</code>. Pode ser que começamos a ficar um pouco confusos. Resumindo, quando criamos um objeto e utilizamos essa sintáxe <code>self</code>, criamos uma Singleton Class, que é uma classe anônima ligada apenas ao objeto que a criou.</p>
+<p>Quando inserimos o trecho <code>def self.open</code>, na verdade estamos criando uma Singleton class ligada à classe <code>House</code> (que é uma instância de Class, ou seja, também é um objeto) e definindo o método <code>open</code> nela, quando chamamos <code>House.open</code>, estamos chamando o método da Singleton Class que foi criada. Talvez fique mais fácil de entender se você imaginar que, métodos de classe não existem, na verdade, eles são a sintáxe que utilizamos para acessar os métodos da Singleton Class de um objeto. Fica mais intuitivo entender o nome dado quando sabemos que, quando executamos <code>House.open</code> pela segunda vez, não é criada uma nova Singleton Class, apenas é executado o método definido na instância criada anteriormente, seguindo o Singleton Pattern.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode ruby code-with-copy"><code class="sourceCode ruby"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">class</span> <span class="dt">House</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dv">self</span><span class="at">.open</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">puts</span> <span class="st">"...Opened"</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Não cria uma nova Singleton Class, apenas adiciona um novo método na instância existente</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="cf">def</span> <span class="dt">House</span><span class="at">.close</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">puts</span> <span class="st">"...Closed"</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="dt">House</span><span class="at">.open</span>   <span class="co"># =&gt; ...Opened</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="dt">House</span><span class="at">.close</span>  <span class="co"># =&gt; ...Closed</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Acredito que nesse momento conseguimos compreender o que é esse objeto chamado Singleton Class e como utilizamos, mas ainda não discutimos sobre como ele nos impacta na vida real, pois faremos isso agora. Em conversa com alguns colegas, foi citado que um possível uso para essa característica da linguagem seria sobreescrever métodos de objetos para auxiliar alguns testes. No exemplo a seguir, utilizamos a Singleton Class de um objeto para sobreescrever um método para auxiliar o teste de um trecho código.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode ruby code-with-copy"><code class="sourceCode ruby"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>context <span class="st">"Error to close the house"</span> <span class="cf">do</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Método chamado dentro de self.close</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dt">House</span><span class="at">.close_principal_door</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">raise</span> <span class="dt">EspecificException</span>, <span class="st">"Error to close the principal door"</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    expect(<span class="dt">House</span><span class="at">.close</span>)<span class="at">.to</span> raise_error(<span class="dt">EspecificException</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Particularmente, saber dessa característica de Ruby, me fez entender mais claramente um bug que criei ao desenvolver um comportamento, vou tentar apenas ilustrar o problema ocorrido em um contexto mais simples no trecho abaixo.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode ruby code-with-copy"><code class="sourceCode ruby"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">class</span> <span class="dt">Book</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dv">self</span><span class="at">.gift_a_friend</span>(friend, book)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="ot">@fried</span> <span class="kw">=</span> friend</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="ot">@book</span> <span class="kw">=</span> book</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        send_now(book) <span class="cf">unless</span> friend_has_this_book?</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">private</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dv">self</span><span class="at">.friend_has_this_book?</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="ot">@friend_has_this_book</span> <span class="kw">||=</span> <span class="ot">@friend</span><span class="at">.books.include?</span> <span class="ot">@book</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="dt">Book</span><span class="at">.gift_a_friend</span>(friend1, book)  <span class="co"># =&gt; Comportamento correto</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="dt">Book</span><span class="at">.gift_a_friend</span>(friend2, book)  <span class="co"># =&gt; Comportamento errado</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>O problema é que, na segunda vez em que o método <code>.friend_has_this_book</code> for chamado, ele não vai executar <code>@friend.books.include? @book</code> pois o valor <code>@friend_has_this_book</code> já foi preenchido na primeira vez em que o código foi executado.</p>
+<p>Eu gostaria de ter entendido bem antes esse conceito da linguagem, mas é um ótimo ponto de partida pra quem quer conhecer mais profundamente a linguagem Ruby e suas características, com certeza esses entendimentos irão evitar a os erros e ajudá-lo na análise dos problemas que você enfrentará como programador. Espero que tenha gostado, até a próxima.</p>
 
 
 
@@ -248,7 +338,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/jmouradeveloper\.github\.io\/developerblog\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
