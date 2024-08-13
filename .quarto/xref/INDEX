@@ -10,5 +10,8 @@
   },
   "posts/post-with-code/index.qmd": {
     "index.html": "8c4f1871"
+  },
+  "posts/singleton-class/index.qmd": {
+    "index.html": "5b5d08a9"
   }
 }
