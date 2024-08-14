@@ -127,8 +127,8 @@ Book.gift_a_friend(joao, 'Lord of the Rings')
 # João já possui o livro 'Lord of the Rings'
 
 Book.gift_a_friend(guilherme, 'Lord of the Rings')
-# Verificando se Guilherme já possui o livro 'Warrior Cats'
-# Guilherme já possui o livro 'Warrior Cats'
+# Verificando se Guilherme já possui o livro 'Lord of the Rings'
+# Guilherme já possui o livro 'Lord of the Rings'
 
 guilherme
 # => #<Friend:0x000079bd4d8e6d20 @books=[], @name="Guilherme">
