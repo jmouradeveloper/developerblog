@@ -190,7 +190,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># House é uma instância da classe `Class`</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="dt">House</span><span class="at">.class</span>  <span class="co"># =&gt; Class</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Isso pode ser diferente das coisas que você já viu antes e funciona de forma diferente de como eu acreditava, mas como essa característica da linguagem me impactava como programador? Eu não sabia, então procurei entender mais sobre esse comportamento, até que encontrei a chamada Singleton Class, também encontrei referências que chamam de Eigenclass ou Classe anônima. Independente de como chamamos, essa classe “escondida” é responsável por termos em Ruby os chamados métodos de classe, como o desse trecho abaixo.</p>
+<p>Isso pode ser diferente das coisas que você já viu antes e funciona de forma diferente de como eu acreditava, então começei a me perguntar como essa característica da linguagem me impactava como programador? Eu não tinha uma resposta muito boa e procurei entender mais sobre esse comportamento, até que encontrei a chamada Singleton Class (também encontrei referências que chamam Eigenclass, Classe anônima e Object-Specific Class), a responsável por termos em Ruby os chamados métodos de classe, como o desse trecho abaixo.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode ruby code-with-copy"><code class="sourceCode ruby"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">class</span> <span class="dt">House</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dv">self</span><span class="at">.open</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">puts</span> <span class="st">"...Opened"</span></span>
@@ -198,49 +198,104 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="dt">House</span><span class="at">.open</span>  <span class="co"># =&gt; ...Opened</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Acredito que não há nada diferente nesse código do que estamos acostumados escrever como programador Ruby, mas o que novidade para mim é saber que a sintáxe <code>def self.open</code> é a responsável por acessar a Singleton Class da classe <code>House</code>. Pode ser que começamos a ficar um pouco confusos. Resumindo, quando criamos um objeto e utilizamos essa sintáxe <code>self</code>, criamos uma Singleton Class, que é uma classe anônima ligada apenas ao objeto que a criou.</p>
-<p>Quando inserimos o trecho <code>def self.open</code>, na verdade estamos criando uma Singleton class ligada à classe <code>House</code> (que é uma instância de Class, ou seja, também é um objeto) e definindo o método <code>open</code> nela, quando chamamos <code>House.open</code>, estamos chamando o método da Singleton Class que foi criada. Talvez fique mais fácil de entender se você imaginar que, métodos de classe não existem, na verdade, eles são a sintáxe que utilizamos para acessar os métodos da Singleton Class de um objeto. Fica mais intuitivo entender o nome dado quando sabemos que, quando executamos <code>House.open</code> pela segunda vez, não é criada uma nova Singleton Class, apenas é executado o método definido na instância criada anteriormente, seguindo o Singleton Pattern.</p>
+<p>Acredito que não há nada no código acima que seja diferente do que estamos acostumados escrever como programador Ruby. Singleton Classes nos permitem adicionar métodos em objetos pré-definidos que só afetarão o objeto que define este método, como no trecho abaixo.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode ruby code-with-copy"><code class="sourceCode ruby"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">class</span> <span class="dt">House</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dv">self</span><span class="at">.open</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">puts</span> <span class="st">"...Opened"</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> lawn_situation</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">puts</span> <span class="st">"...this is perfect"</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Não cria uma nova Singleton Class, apenas adiciona um novo método na instância existente</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="cf">def</span> <span class="dt">House</span><span class="at">.close</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">puts</span> <span class="st">"...Closed"</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="dt">House</span><span class="at">.open</span>   <span class="co"># =&gt; ...Opened</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="dt">House</span><span class="at">.close</span>  <span class="co"># =&gt; ...Closed</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Acredito que nesse momento conseguimos compreender o que é esse objeto chamado Singleton Class e como utilizamos, mas ainda não discutimos sobre como ele nos impacta na vida real, pois faremos isso agora. Em conversa com alguns colegas, foi citado que um possível uso para essa característica da linguagem seria sobreescrever métodos de objetos para auxiliar alguns testes. No exemplo a seguir, utilizamos a Singleton Class de um objeto para sobreescrever um método para auxiliar o teste de um trecho código.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode ruby code-with-copy"><code class="sourceCode ruby"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>context <span class="st">"Error to close the house"</span> <span class="cf">do</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Método chamado dentro de self.close</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dt">House</span><span class="at">.close_principal_door</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">raise</span> <span class="dt">EspecificException</span>, <span class="st">"Error to close the principal door"</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    expect(<span class="dt">House</span><span class="at">.close</span>)<span class="at">.to</span> raise_error(<span class="dt">EspecificException</span>)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>my_home <span class="kw">=</span> <span class="dt">House</span><span class="at">.new</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>neighbors_house <span class="kw">=</span> <span class="dt">House</span><span class="at">.new</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="cf">def</span> my_home<span class="at">.lawn_situation</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">puts</span> <span class="st">"...could be better"</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>neighbors_house<span class="at">.lawn_situation</span>  <span class="co"># =&gt; ...this is perfect</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>my_home<span class="at">.lawn_situation</span>  <span class="co"># =&gt; ...could be better</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Isso também explica como criamos o método de classe <code>self.open</code> do trecho anterior, pois como a classe <code>House</code> é um objeto da classe <code>Class</code>, então também utilizamos essa sintáxe (<code>self.open</code>) para adicionar um novo método nesse objeto pré-definido.</p>
+<p>Entendi então que as sintaxes <code>def self.open</code> e <code>def my_home.lawn_situation</code> são responsáveis por acessar a Singleton Class desses objetos adicionandos estes métodos nelas e não diretamente nas suas classes, permitindo que estes novos métodos afetem apenas os seus respectivos objetos.</p>
+<p>Acredito que nesse momento conseguimos compreender o que é esse objeto chamado Singleton Class e como utilizamos, mas ainda não discutimos sobre como ele nos impacta na vida real, pois faremos isso agora. Em conversa com alguns colegas, foi citado que um possível uso para essa característica da linguagem seria sobreescrever métodos de objetos para auxiliar alguns testes. No exemplo a seguir, utilizamos a Singleton Class para sobreescrever um método com o objetivo de auxiliar o teste de um trecho código.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode ruby code-with-copy"><code class="sourceCode ruby"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Definindo a classe House</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">class</span> <span class="dt">House</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dv">self</span><span class="at">.close</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="dv">self</span><span class="at">.close_back_door</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="dv">self</span><span class="at">.close_windows</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="dv">self</span><span class="at">.close_principal_door</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        <span class="dv">nil</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dv">self</span><span class="at">.close_back_door</span> <span class="kw">=</span> <span class="fu">puts</span> <span class="st">"...Closed Back Door"</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dv">self</span><span class="at">.close_windows</span> <span class="kw">=</span> <span class="fu">puts</span> <span class="st">"...Closed Windows"</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dv">self</span><span class="at">.close_principal_door</span> <span class="kw">=</span> <span class="fu">puts</span> <span class="st">"...Closed Principal Door"</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Testando a classe House</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>context <span class="st">"Error to close the house"</span> <span class="cf">do</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dt">House</span><span class="at">.close_principal_door</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        <span class="fu">raise</span> <span class="dt">EspecificException</span>, <span class="st">"Error to close the principal door"</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    expect(<span class="dt">House</span><span class="at">.close</span>)<span class="at">.to</span> raise_error(<span class="dt">EspecificException</span>)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Particularmente, saber dessa característica de Ruby, me fez entender mais claramente um bug que criei ao desenvolver um comportamento, vou tentar apenas ilustrar o problema ocorrido em um contexto mais simples no trecho abaixo.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode ruby code-with-copy"><code class="sourceCode ruby"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">class</span> <span class="dt">Book</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dv">self</span><span class="at">.gift_a_friend</span>(friend, book)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="ot">@fried</span> <span class="kw">=</span> friend</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="ot">@friend</span> <span class="kw">=</span> friend</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="ot">@book</span> <span class="kw">=</span> book</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        send_now(book) <span class="cf">unless</span> friend_has_this_book?</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">private</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> send_now(<span class="ot">@book</span>) <span class="cf">unless</span> friend_has_this_book?</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">puts</span> <span class="st">"</span><span class="sc">#{</span><span class="ot">@friend</span><span class="at">.name</span><span class="sc">}</span><span class="st"> já possui o livro '</span><span class="sc">#{</span><span class="ot">@book</span><span class="sc">}</span><span class="st">'"</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dv">self</span><span class="at">.friend_has_this_book?</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="ot">@friend_has_this_book</span> <span class="kw">||=</span> <span class="ot">@friend</span><span class="at">.books.include?</span> <span class="ot">@book</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="dt">Book</span><span class="at">.gift_a_friend</span>(friend1, book)  <span class="co"># =&gt; Comportamento correto</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="dt">Book</span><span class="at">.gift_a_friend</span>(friend2, book)  <span class="co"># =&gt; Comportamento errado</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>O problema é que, na segunda vez em que o método <code>.friend_has_this_book</code> for chamado, ele não vai executar <code>@friend.books.include? @book</code> pois o valor <code>@friend_has_this_book</code> já foi preenchido na primeira vez em que o código foi executado.</p>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">private</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dv">self</span><span class="at">.friend_has_this_book?</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        <span class="fu">puts</span> <span class="st">"Verificando se </span><span class="sc">#{</span><span class="ot">@friend</span><span class="at">.name</span><span class="sc">}</span><span class="st"> já possui o livro '</span><span class="sc">#{</span><span class="ot">@book</span><span class="sc">}</span><span class="st">'"</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        <span class="ot">@friend_has_this_book</span> <span class="kw">||=</span> <span class="ot">@friend</span><span class="at">.books.include?</span>(<span class="ot">@book</span>)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dv">self</span><span class="at">.send_now</span>(book)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        <span class="fu">puts</span> <span class="st">"Enviando o livro '</span><span class="sc">#{</span>book<span class="sc">}</span><span class="st">' para </span><span class="sc">#{</span><span class="ot">@friend</span><span class="at">.name</span><span class="sc">}</span><span class="st">!"</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        <span class="ot">@friend</span><span class="at">.add_book</span>(book)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="cf">class</span> <span class="dt">Friend</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="ot">attr_reader</span> <span class="wa">:name</span>, <span class="wa">:books</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> initialize(name, books <span class="kw">=</span> <span class="kw">[]</span>)</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>        <span class="ot">@name</span> <span class="kw">=</span> name</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>        <span class="ot">@books</span> <span class="kw">=</span> books</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> add_book(book)</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>        <span class="ot">@books</span> <span class="kw">&lt;&lt;</span> book</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>joao <span class="kw">=</span> <span class="dt">Friend</span><span class="at">.new</span>(<span class="vs">'João'</span>)</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>guilherme <span class="kw">=</span> <span class="dt">Friend</span><span class="at">.new</span>(<span class="vs">'Guilherme'</span>)</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="dt">Book</span><span class="at">.gift_a_friend</span>(joao, <span class="vs">'Lord of the Rings'</span>)</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificando se João já possui o livro 'Lord of the Rings'</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Enviando o livro 'Lord of the Rings' para João!</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="dt">Book</span><span class="at">.gift_a_friend</span>(joao, <span class="vs">'Lord of the Rings'</span>)</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificando se João já possui o livro 'Lord of the Rings'</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a><span class="co"># João já possui o livro 'Lord of the Rings'</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a><span class="dt">Book</span><span class="at">.gift_a_friend</span>(guilherme, <span class="vs">'Lord of the Rings'</span>)</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificando se Guilherme já possui o livro 'Warrior Cats'</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Guilherme já possui o livro 'Warrior Cats'</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>guilherme</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="co"># =&gt; #&lt;Friend:0x000079bd4d8e6d20 @books=[], @name="Guilherme"&gt;</span></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a><span class="co"># WTF? Guilherme não possui o livro 'Lord of the Rings'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>O problema é que, na segunda vez em que o método <code>.friend_has_this_book?</code> for chamado, ele não vai executar <code>@friend.books.include?(@book)</code> pois o valor <code>@friend_has_this_book</code> já foi preenchido, pois a Singleton Class é criada apenas uma única vez (por isso o nome Singleton), as chamadas seguintes apenas acessarão a Singleton Class já existente mantendo seu estado.</p>
 <p>Eu gostaria de ter entendido bem antes esse conceito da linguagem, mas é um ótimo ponto de partida pra quem quer conhecer mais profundamente a linguagem Ruby e suas características, com certeza esses entendimentos irão evitar a os erros e ajudá-lo na análise dos problemas que você enfrentará como programador. Espero que tenha gostado, até a próxima.</p>
 <p>Algumas fontes que eu utilizei para entender um pouco mais sobre esse assunto: - <a href="https://ruby-doc.org/core-2.7.1/doc/singleton.html">Ruby Singleton Class</a> - <a href="https://suchdevblog.com/lessons/ExplainingRubySingletonClass.html#the-singleton-pattern">Explaining Ruby’s Singleton Class (Eigenclass) to confused beginners</a></p>
 
