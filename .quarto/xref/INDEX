@@ -13,5 +13,8 @@
   },
   "posts/singleton-class/index.qmd": {
     "index.html": "5b5d08a9"
+  },
+  "posts/singleton-class-en/index.qmd": {
+    "index.html": "d70e9034"
   }
 }

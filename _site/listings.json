@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/singleton-class-en/index.html",
       "/posts/singleton-class/index.html"
     ]
   }
