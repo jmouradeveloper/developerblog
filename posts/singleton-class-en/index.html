@@ -185,7 +185,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>Hi, I expect are you ready, now we will try to understand what is this “hidden” object in all places when we code in ruby.</p>
-<p>If you are a curious programmer, you know that Ruby is a Object Oriented programming language, and beyond, everything is an object in ruby, everything. When we define a <code>House</code> class, for exemple, this class is also an object, a <code>Class</code> instance. We can see thisin the code snippet below, where we callthe <code>.class</code> method returning the class of this object.</p>
+<p>If you are a curious programmer, you know that Ruby is a Object Oriented programming language, and beyond, everything is an object in ruby, everything. When we define a <code>House</code> class, for exemple, this class is also an object, a <code>Class</code> instance. We can see this in the code snippet below, where we call the <code>.class</code> method returning the class name of this object.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode ruby code-with-copy"><code class="sourceCode ruby"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">class</span> <span class="dt">House</span>; <span class="cf">end</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># House is an intance of `Class`</span></span>
@@ -198,7 +198,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="dt">House</span><span class="at">.open</span>  <span class="co"># =&gt; ...Opened</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>I believe there is nothing in this code different from we use to write ruby code everyday. Singleton Classes allow us to add methods to pre-defined objects that only affect the object that defines this method, like the code snippet below.</p>
+<p>I believe there is nothing in this code different of we use to write ruby code everyday. Singleton Classes allow us to add methods to pre-defined objects that only affect the object that defines this method, like the code snippet below.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode ruby code-with-copy"><code class="sourceCode ruby"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">class</span> <span class="dt">House</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> lawn_situation</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">puts</span> <span class="st">"...this is perfect"</span></span>
@@ -216,7 +216,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>my_home<span class="at">.lawn_situation</span>  <span class="co"># =&gt; ...could be better</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This also explain how we create the <code>self.open</code> method in the previous code, since the <code>House</code> class is an object of the <code>Class</code> class, so we also use this syntax (<code>self.open</code>) to add a new method to this pre-defined object.</p>
 <p>Now, I understand that the syntaxes <code>def self.open</code> and <code>def my_home.lawn_situation</code> are responsible for accessing the Singleton Class of these objects to add the methods and not directly to their classes, allowing these new methods to only affect their respective objects.</p>
-<p>I think now we can understand what is this object called Singleton Class and how we use it, but still we haven’t discussed how it impacts our real life, so we will do it now. In a conversation with some friends, it was mentioned a use case to this feature, we can to override object methods to help us to create some specs. Below, we used the Singleton Class to override a method to help us to test a code behaviour.</p>
+<p>I think now we can understand what is this object called Singleton Class and how we use it, but we haven’t discussed how it impacts our real life, so we will do it now. In a conversation with some friends, it was mentioned a use case to this feature, we can to override object methods to help us to create some specs. Below, we used the Singleton Class to override a method to help us to test a code behaviour.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode ruby code-with-copy"><code class="sourceCode ruby"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Defining House class</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">class</span> <span class="dt">House</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dv">self</span><span class="at">.close</span></span>
@@ -239,7 +239,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    expect(<span class="dt">House</span><span class="at">.close</span>)<span class="at">.to</span> raise_error(<span class="dt">EspecificException</span>)</span>
 <span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Particularly, knowing this ruby feature, made me understand clearly about a bug I created when developing, I will try to illustrate the problem in a simpler context below.</p>
+<p>Particularly, knowing this ruby feature, made me understand clearly about a bug I created when I was developing a new system feature, I will try to illustrate the problem in a simpler context.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode ruby code-with-copy"><code class="sourceCode ruby"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">class</span> <span class="dt">Book</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">def</span> <span class="dv">self</span><span class="at">.gift_a_friend</span>(friend, book)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="ot">@friend</span> <span class="kw">=</span> friend</span>
@@ -295,11 +295,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="co"># =&gt; #&lt;Friend:0x000079bd4d8e6d20 @books=[], @name="Guilherme"&gt;</span></span>
 <span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a><span class="co"># WTF? Guilherme has not the book 'Lord of the Rings'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The problem is in the second time when the <code>.friend_has_this_book?</code> method is called, it will not execute <code>@friend.books.include?(@book)</code> because the <code>@friend_has_this_book</code> variable value has already been set, ’cause the Singleton Class is created only once (this explains the name Singleton), the next calls will only access the existing Singleton Class keeping its state.</p>
-<p>I would like to understood it before, but it is a good starting for those who want to know deeper about the ruby language and its features, these understandings will avoid the errors and help you to analyze the problems you will face as a programmer. I hope you enjoyed, see you.</p>
-<p>Some sources I used to understand about this subject: - <a href="https://ruby-doc.org/core-2.7.1/doc/singleton.html">Ruby Singleton Class</a></p>
+<p>The problem is in the second time when the <code>.friend_has_this_book?</code> method is called, it will not execute <code>@friend.books.include?(@book)</code> because the <code>@friend_has_this_book</code> instance variable value has already been set. The Singleton Class is created only once (this explains the name Singleton), the following calls will only access the existing Singleton Class keeping its state.</p>
+<p>I would like to understood it before, but it is a good starting for who want to know deeper about the ruby language and its features, these knowledge will avoid the errors and help us to analyze the problems you will face as a programmer. I hope you enjoyed, see you.</p>
+<p>Some sources I used to understand about this subject:</p>
 <ul>
-<li><a href="https://suchdevblog.com/lessons/ExplainingRubySingletonClass.html#the-singleton-pattern">Explaining Ruby’s Singleton Class (Eigenclass) to confused beginners</a></li>
+<li><p><a href="https://ruby-doc.org/core-2.7.1/doc/singleton.html">Ruby Singleton Class</a></p></li>
+<li><p><a href="https://suchdevblog.com/lessons/ExplainingRubySingletonClass.html#the-singleton-pattern">Explaining Ruby’s Singleton Class (Eigenclass) to confused beginners</a></p></li>
 </ul>
 
 
